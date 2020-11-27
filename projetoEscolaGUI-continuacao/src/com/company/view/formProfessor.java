@@ -1,10 +1,13 @@
 package com.company.view;
 
+import com.company.dao.AlunoDao;
+import com.company.dao.ProfessorDao;
 import com.company.model.Professor;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.util.Collections;
 
 public class formProfessor {
@@ -16,10 +19,6 @@ public class formProfessor {
     private JTextField textNome;
     private JTextField textEmail;
     private JTextField textTelefone;
-    private JCheckBox emdsCheckBox;
-    private JCheckBox emiaCheckBox;
-    private JCheckBox eminfoCheckBox;
-    private JCheckBox emadCheckBox;
     private JTextField textEndereco;
 
     public formProfessor(){
@@ -29,39 +28,23 @@ public class formProfessor {
             public void mouseClicked(MouseEvent e) {
                 Professor professor = new Professor();
                 professor.setCpf(Integer.parseInt(textCPF.getText()));
-                professor.setRg(Integer.parseInt(textRG.getText()));
+                professor.setRg(textRG.getText());
                 professor.setNome(textNome.getText());
                 professor.setEmail(textEmail.getText());
-                professor.setTelefone(Integer.parseInt(textTelefone.getText()));
+                professor.setTelefone(textTelefone.getText());
                 professor.setEndereco(textEndereco.getText());
 
-                if(emdsCheckBox.isSelected()){
-                    professor.setTurmas_emds("sim");
-                }
-
-                if(emiaCheckBox.isSelected()){
-                    professor.setTurmas_emia("sim");
-                }
-
-                if(eminfoCheckBox.isSelected()){
-                    professor.setTurmas_eminfo("sim");
-                }
-
-                if(emadCheckBox.isSelected()){
-                    professor.setTurmas_emad("sim");
-                }
-
-                if(professor.getTurmas_emad().equals("não") && professor.getTurmas_emds().equals("não")
-                && professor.getTurmas_emia().equals("não") && professor.getTurmas_eminfo().equals("não")){
-
+                ProfessorDao dao = new ProfessorDao();
+                try {
+                    dao.inserirDado(professor);
+                } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(
                             null,
-                            "Cada professor precisa lecionar ao menos uma turma",
-                            "Cadastro não realizado",
-                            JOptionPane.WARNING_MESSAGE
+                            "Erro \n" + ex.toString(),
+                            "Erro ao cadastrar professor",
+                            JOptionPane.INFORMATION_MESSAGE
                     );
-
-                }else{
+                }
 
                     JOptionPane.showMessageDialog(
                             null,
@@ -71,7 +54,6 @@ public class formProfessor {
                     );
                     limparTela();
                 }
-            }
         });
         sairButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -92,11 +74,6 @@ public class formProfessor {
         textEmail.setText("");
         textEndereco.setText("");
         textTelefone.setText("");
-
-        emdsCheckBox.setSelected(false);
-        emiaCheckBox.setSelected(false);
-        eminfoCheckBox.setSelected(false);
-        emadCheckBox.setSelected(false);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.company.view;
 
+import com.company.dao.AlunoDao;
 import com.company.model.Aluno;
 import com.company.model.Curso;
 
@@ -7,6 +8,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class formAluno {
     private JTextField textRM;
@@ -45,7 +47,23 @@ public class formAluno {
                         break;
                 }
                 aluno.setCurso(curso);
+
+                //mudado - sql - mensagem de erro
+
+                AlunoDao dao = new AlunoDao();
+                try {
+                    dao.inserirDado(aluno);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Erro \n" + ex.toString(),
+                            "Erro ao cadastrar aluno",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
+                }
+
                 //mostrar como resultado os dados do aluno no objeto aluno.
+
                 JOptionPane.showMessageDialog(
                         null,
                         "Dados do Aluno \n" + aluno.toString(),
